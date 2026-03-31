@@ -1,0 +1,38 @@
+class Solution {
+public:
+    int leastInterval(vector<char>& tasks, int n) {
+        vector<int> character(26,0);
+
+        for(char task:tasks) {
+            character[task-'A']++;
+        }
+
+        priority_queue<int> qmax;
+        for(int ch:character) {
+            if(ch != 0) qmax.push(ch);
+        }
+
+        int time = 0;
+        queue<pair<int,int>> q;
+        while(!qmax.empty() || !q.empty()) {
+            time++;
+
+            if(qmax.empty()) {
+                time = q.front().second;
+            } else {
+                int t = qmax.top()-1;
+                qmax.pop();
+                if(t > 0) {
+                    q.push({t,time+n});
+                }
+            }
+
+            while(!q.empty() && q.front().second == time) {
+                qmax.push(q.front().first);
+                q.pop();
+            }
+        }
+
+        return time;
+    }
+};
